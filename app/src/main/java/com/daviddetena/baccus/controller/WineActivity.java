@@ -15,7 +15,6 @@ public class WineActivity extends Activity {
 
     private static final String TAG = WineActivity.class.getSimpleName();
 
-
     // Modelo
     private Wine mWine = null;
 
@@ -45,6 +44,9 @@ public class WineActivity extends Activity {
                 "El Bierzo",
                 5);
 
+        // Añadimos una uva
+        mWine.addGrape("Mencía");
+
         // Accedemos a las vistas desde el controlador, utilizando sus referencias en el .xml, para
         // asociarlas a nuestras variables
         mWineImage = (ImageView) findViewById(R.id.wine_image);
@@ -72,5 +74,17 @@ public class WineActivity extends Activity {
         mWineRatingBar.setRating(mWine.getRating());
         mWineCompanyText.setText(mWine.getCompanyName());
         mWineNotesText.setText(mWine.getNotes());
+
+        // Creamos tantos TextViews como Uvas tenga el vino
+        for(int i=0; i<mWine.getGrapeCount(); i++){
+            TextView grapeText = new TextView(this);
+            grapeText.setText(mWine.getGrape(i));
+
+            // Queremos que la uva ocupe el ancho completo en su contenedor
+            grapeText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            // Añadimos la vista de la uva que hemos creado a su contenedor
+            mWineGrapesContainer.addView(grapeText);
+        }
     }
 }
