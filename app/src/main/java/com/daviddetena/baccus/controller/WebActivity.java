@@ -18,6 +18,8 @@ import com.daviddetena.baccus.model.Wine;
  */
 public class WebActivity extends Activity {
 
+    private static final String STATE_URL = "url";
+
     // Modelo
     private Wine mWine = null;
 
@@ -56,7 +58,7 @@ public class WebActivity extends Activity {
         // y no que se abra en el Navegador por defecto de Android.
         // Para ello sobreescrimos métodos del WebViewClient a través de la clase anónima que
         // creamos y que utilizaremos para dar feedback al usuario con la progressbar
-        mBrowser.setWebViewClient(new WebViewClient(){
+        mBrowser.setWebViewClient(new WebViewClient() {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -81,8 +83,24 @@ public class WebActivity extends Activity {
         mBrowser.getSettings().setJavaScriptEnabled(true);
         mBrowser.getSettings().setBuiltInZoomControls(true);
 
-        // Cargo la página web del vino
-        mBrowser.loadUrl(mWine.getCompanyWeb());
+        // Cargo la página web del vino (), o la última que hubiera guardada
+        if(savedInstanceState==null || !savedInstanceState.containsKey(STATE_URL)){
+            mBrowser.loadUrl(mWine.getCompanyWeb());
+        }
+        else{
+            mBrowser.loadUrl(savedInstanceState.getString(STATE_URL));
+        }
 
+
+    }
+
+    /**
+     * Guardamos en nuestra constante la última url visitada antes de que el objeto se destruya
+     * @param outState
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(STATE_URL, mBrowser.getUrl());
     }
 }
