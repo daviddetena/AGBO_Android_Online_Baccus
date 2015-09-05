@@ -11,18 +11,19 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
 
-        <activity
-            android:name="com.daviddetena.baccus.controller.WineActivity"
-            android:label="@string/app_name" >
-        </activity>
-
-        <!-- Ahora la pantalla que se verá al arrancar la app será la de WebView -->
-        <activity android:name=".controller.WebActivity" android:label="@string/app_name"
-            android:configChanges="orientation|screenSize|keyboardHidden">
+        <!-- La pantalla del vino será la inicial. A partir del botón i accederemos al Activity
+        de la web del vino WebActivity -->
+        <activity android:name="com.daviddetena.baccus.controller.WineActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".controller.WebActivity" android:label="@string/app_name"
+            android:configChanges="orientation|screenSize|keyboardHidden">
+
         </activity>
     </application>
 

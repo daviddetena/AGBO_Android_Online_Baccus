@@ -4,10 +4,15 @@
 
 package com.daviddetena.baccus.model;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Wine {
+
+/**
+ * Implementa Serializable para que pueda ser pasado como un argumento dentro de los Intent
+ */
+public class Wine implements Serializable{
     private String mName = null;
     private String mType = null;
     private int mPhoto = 0;                                 // Images are traduced to numbers

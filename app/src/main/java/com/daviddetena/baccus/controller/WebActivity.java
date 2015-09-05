@@ -22,6 +22,12 @@ import com.daviddetena.baccus.model.Wine;
  */
 public class WebActivity extends AppCompatActivity {
 
+    // Constante con la hacemos referencia al modelo (Wine) que viene de la pantalla anterior y que
+    // recogeremos mediante getIntent().getSerializableExtra()
+    public static final String EXTRA_WINE = "com.daviddetena.baccus.controller.WineActivity.extra_wine";
+
+    // Constante del diccionario saveInstanceState() con la que guardamos la última url cargada
+    // por el browser
     private static final String STATE_URL = "url";
 
     // Modelo
@@ -35,22 +41,13 @@ public class WebActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
         // Esta clase tendrá por contenido la actividad de la web del vino definida en su .xml
         setContentView(R.layout.activity_web);
 
-        // Creamos el modelo
-        mWine = new Wine("Bembibre",
-                "Tinto",
-                R.drawable.vegaval,
-                "Dominio de Tares",
-                "http://www.dominiodetares.com/portfolio/bembibre/",
-                "Este vino muestra toda la complejidad y la elegancia de la variedad Mencía. En fase visual luce un color rojo picota muy cubierto con tonalidades violáceas en el menisco. En nariz aparecen recuerdos frutales muy intensos de frutas rojas (frambuesa, cereza) y una potente ciruela negra, así como tonos florales de la gama de las rosas y violetas, vegetales muy elegantes y complementarios, hojarasca verde, tabaco y maderas aromáticas (sándalo) que le brindan un toque ciertamente perfumado.",
-                "El Bierzo",
-                5);
+        // Accedemos al modelo que se nos pasa a través del Intent desde la pantalla inicial
+        // de WineActivity
+        mWine = (Wine) getIntent().getSerializableExtra(EXTRA_WINE);
 
-        mWine.addGrape("Mencía");
 
         // Asociamos vista y controlador
         mBrowser = (WebView) findViewById(R.id.browser);

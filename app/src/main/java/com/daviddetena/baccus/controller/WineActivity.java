@@ -1,9 +1,11 @@
 package com.daviddetena.baccus.controller;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -27,6 +29,7 @@ public class WineActivity extends Activity {
     private TextView mWineCompanyText = null;
     private TextView mWineNotesText = null;
     private ViewGroup mWineGrapesContainer = null;
+    private ImageButton mGoToWebButton = null;
 
 
     @Override
@@ -57,6 +60,7 @@ public class WineActivity extends Activity {
         mWineCompanyText = (TextView) findViewById(R.id.wine_company);
         mWineNotesText = (TextView) findViewById(R.id.wine_notes);
         mWineGrapesContainer = (ViewGroup) findViewById(R.id.grapes_container);
+        mGoToWebButton = (ImageButton) findViewById(R.id.go_to_web_button);
 
         // Sincronizamos modelo y vista
         syncModelWithView();
@@ -86,5 +90,22 @@ public class WineActivity extends Activity {
             // Añadimos la vista de la uva que hemos creado a su contenedor
             mWineGrapesContainer.addView(grapeText);
         }
+
+        // Configuramos botones
+
+        // Clase anónima para suscribirme al evento del click en el botón. Implementamos los métodos
+        // de dicha interfaz. En este caso, sólo el onClick, donde cargaremos nuestra WebView
+        // Activity mediante un intent.
+        mGoToWebButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                Intent webIntent = new Intent(WineActivity.this, WebActivity.class);
+
+                // Pasamos nuestro modelo Wine al Activity de WebActivity
+                webIntent.putExtra(WebActivity.EXTRA_WINE, mWine);
+                startActivity(webIntent);
+            }
+        });
     }
 }
