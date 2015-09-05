@@ -3,6 +3,10 @@ package com.daviddetena.baccus.controller;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -16,7 +20,7 @@ import com.daviddetena.baccus.model.Wine;
 /**
  * Created by daviddetena on 05/09/15.
  */
-public class WebActivity extends Activity {
+public class WebActivity extends AppCompatActivity {
 
     private static final String STATE_URL = "url";
 
@@ -87,11 +91,9 @@ public class WebActivity extends Activity {
         if(savedInstanceState==null || !savedInstanceState.containsKey(STATE_URL)){
             mBrowser.loadUrl(mWine.getCompanyWeb());
         }
-        else{
+        else {
             mBrowser.loadUrl(savedInstanceState.getString(STATE_URL));
         }
-
-
     }
 
     /**
@@ -102,5 +104,41 @@ public class WebActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_URL, mBrowser.getUrl());
+    }
+
+    /**
+     * Sobreescribimos método que se encarga de añadir nuestro menú definido en un .xml a nuestra
+     * activity
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        // Con esta clase MenuInflater le indicamos que queremos que nos incluya en el menú pasado
+        // por parámetro las opciones que están en el fichero xml R.menu.menu_web
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_web, menu);
+
+        return true;
+    }
+
+
+    /**
+     * Indicamos qué hacer al pulsar el item del menú indicado por parámetro
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        // Comprobamos si el item seleccionado es el "reload"
+        if(item.getItemId() == R.id.menu_reload){
+            mBrowser.reload();
+            return true;
+        }
+        return false;
     }
 }
