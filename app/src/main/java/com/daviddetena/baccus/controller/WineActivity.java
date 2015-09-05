@@ -3,6 +3,10 @@ package com.daviddetena.baccus.controller;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -13,9 +17,16 @@ import android.widget.TextView;
 import com.daviddetena.baccus.R;
 import com.daviddetena.baccus.model.Wine;
 
-public class WineActivity extends Activity {
+public class WineActivity extends AppCompatActivity {
 
     private static final String TAG = WineActivity.class.getSimpleName();
+
+    // Código para indicar que la pantalla de la que procede es la de Settings en startActivityForResult
+    private static final int SETTINGS_REQUEST = 1;
+
+    // Constante que utilizaremos como clave para guardar la escala actual de la imagen y poderlo
+    // guardar al ejecutar onSaveInstanceState()
+    private static final String STATE_IMAGE_SCALE_TYPE = "com.daviddetena.baccus.controller.WineActivity.STATE_IMAGE_SCALE_TYPE";
 
     // Modelo
     private Wine mWine = null;
@@ -40,7 +51,7 @@ public class WineActivity extends Activity {
         // Creamos el modelo
         mWine = new Wine("Bembibre",
                 "Tinto",
-                R.drawable.vegaval,
+                R.drawable.bembibre,
                 "Dominio de Tares",
                 "http://www.dominiodetares.com/portfolio/bembibre/",
                 "Este vino muestra toda la complejidad y la elegancia de la variedad Mencía. En fase visual luce un color rojo picota muy cubierto con tonalidades violáceas en el menisco. En nariz aparecen recuerdos frutales muy intensos de frutas rojas (frambuesa, cereza) y una potente ciruela negra, así como tonos florales de la gama de las rosas y violetas, vegetales muy elegantes y complementarios, hojarasca verde, tabaco y maderas aromáticas (sándalo) que le brindan un toque ciertamente perfumado.",
@@ -63,14 +74,6 @@ public class WineActivity extends Activity {
         mGoToWebButton = (ImageButton) findViewById(R.id.go_to_web_button);
 
         // Sincronizamos modelo y vista
-        syncModelWithView();
-    }
-
-    /**
-     * Método helper que utilizamos para mostrar en las vistas la información de nuestro modelo de
-     * vino.
-     */
-    private void syncModelWithView(){
         mWineImage.setImageResource(mWine.getPhoto());
         mWineNameText.setText(mWine.getName());
         mWineTypeText.setText(mWine.getType());
@@ -96,7 +99,7 @@ public class WineActivity extends Activity {
         // Clase anónima para suscribirme al evento del click en el botón. Implementamos los métodos
         // de dicha interfaz. En este caso, sólo el onClick, donde cargaremos nuestra WebView
         // Activity mediante un intent.
-        mGoToWebButton.setOnClickListener(new View.OnClickListener(){
+        mGoToWebButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -107,5 +110,86 @@ public class WineActivity extends Activity {
                 startActivity(webIntent);
             }
         });
+
+        // Configuramos cómo se ve la imagen (cargamos lo que haya guardado en la clave definida
+        // STATE_IMAGE_SCALE_TYPE
+        if(savedInstanceState != null && savedInstanceState.containsKey(STATE_IMAGE_SCALE_TYPE)){
+            mWineImage.setScaleType((ImageView.ScaleType) savedInstanceState.getSerializable(STATE_IMAGE_SCALE_TYPE));
+        }
+    }
+
+    /**
+     * {@link #onOptionsItemSelected} method to handle them there.
+     *
+     * @param menu The options menu in which you place your items.
+     * @return You must return true for the menu to be displayed;
+     * if you return false it will not be shown.
+     * @see #onPrepareOptionsMenu
+     * @see #onOptionsItemSelected
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        return true;
+    }
+
+    /**
+     * @param item The menu item that was selected.
+     * @return boolean Return false to allow normal menu processing to
+     * proceed, true to consume it here.
+     * @see #onCreateOptionsMenu
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        // Se ha pulsado el botón de Ajustes. Cargamos la pantalla de Ajustes mediante el Intent
+        if(item.getItemId() == R.id.action_settings){
+
+            // Definimos el parámetro EXTRA_WINE_IMAGE_SCALE_TYPE a la escala que tenga de forma
+            // inicial la imagen. Como queremos recoger información de la pantalla a la que llamamos,
+            // lo hacemos con startActivityForResult()
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            settingsIntent.putExtra(SettingsActivity.EXTRA_WINE_IMAGE_SCALE_TYPE, mWineImage.getScaleType());
+            startActivityForResult(settingsIntent, SETTINGS_REQUEST);
+
+            return true;
+        }
+        else{
+            // Han pulsado otro
+            return false;
+        }
+    }
+
+    /**
+     * Método que se ejecuta al volver de la pantalla indicada en el startActivityForResult
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Comprobamos lo seleccionado por el usuario y que se ha seleccionado algo
+        if(requestCode == SETTINGS_REQUEST && resultCode == RESULT_OK){
+
+            // Cambiamos la escala de la imagen a la que recogemos de la que guardó SettingsActivity
+            ImageView.ScaleType scaleType = (ImageView.ScaleType) data.getSerializableExtra(SettingsActivity.EXTRA_WINE_IMAGE_SCALE_TYPE);
+            mWineImage.setScaleType(scaleType);
+        }
+    }
+
+    /**
+     * Guardamos el estado actual de la escala de la imagen
+     * @param outState
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(STATE_IMAGE_SCALE_TYPE, mWineImage.getScaleType());
     }
 }
