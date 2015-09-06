@@ -8,4 +8,7 @@
     <string name="center">Centrada</string>
     <string name="cancel">Cancelar</string>
     <string name="save">Guardar</string>
+    <string name="title_activity_winery">Baccus</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>

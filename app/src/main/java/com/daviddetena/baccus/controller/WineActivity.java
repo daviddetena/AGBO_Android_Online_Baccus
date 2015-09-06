@@ -19,6 +19,10 @@ import com.daviddetena.baccus.model.Wine;
 
 public class WineActivity extends AppCompatActivity {
 
+    // Constante con la que recibiremos argumento al invocar este Activity desde un Intent
+    public static final String EXTRA_WINE = "com.daviddetena.baccus.controller.WineryActivity.EXTRA_WINE";
+
+
     private static final String TAG = WineActivity.class.getSimpleName();
 
     // Código para indicar que la pantalla de la que procede es la de Settings en startActivityForResult
@@ -48,18 +52,8 @@ public class WineActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wine);
 
-        // Creamos el modelo
-        mWine = new Wine("Bembibre",
-                "Tinto",
-                R.drawable.bembibre,
-                "Dominio de Tares",
-                "http://www.dominiodetares.com/portfolio/bembibre/",
-                "Este vino muestra toda la complejidad y la elegancia de la variedad Mencía. En fase visual luce un color rojo picota muy cubierto con tonalidades violáceas en el menisco. En nariz aparecen recuerdos frutales muy intensos de frutas rojas (frambuesa, cereza) y una potente ciruela negra, así como tonos florales de la gama de las rosas y violetas, vegetales muy elegantes y complementarios, hojarasca verde, tabaco y maderas aromáticas (sándalo) que le brindan un toque ciertamente perfumado.",
-                "El Bierzo",
-                5);
-
-        // Añadimos una uva
-        mWine.addGrape("Mencía");
+        // Recogemos el modelo que nos pasa WineryActivity
+        mWine = (Wine) getIntent().getSerializableExtra(EXTRA_WINE);
 
         // Accedemos a las vistas desde el controlador, utilizando sus referencias en el .xml, para
         // asociarlas a nuestras variables
