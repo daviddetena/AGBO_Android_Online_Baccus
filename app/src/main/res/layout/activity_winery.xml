@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@android:id/tabhost"
-                tools:context="com.daviddetena.baccus.controller.WineryActivity">
+                tools:context="com.daviddetena.baccus.controller.activity.WineryActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

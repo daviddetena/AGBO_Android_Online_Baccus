@@ -1,9 +1,11 @@
-package com.daviddetena.baccus.controller;
+package com.daviddetena.baccus.controller.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,22 +17,26 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.daviddetena.baccus.R;
+import com.daviddetena.baccus.controller.activity.SettingsActivity;
+import com.daviddetena.baccus.controller.activity.WebActivity;
 import com.daviddetena.baccus.model.Wine;
 
-public class WineActivity extends AppCompatActivity {
-
+/**
+ * Created by daviddetena on 06/09/15.
+ */
+public class WineFragment extends Fragment{
     // Constante con la que recibiremos argumento al invocar este Activity desde un Intent
-    public static final String EXTRA_WINE = "com.daviddetena.baccus.controller.WineryActivity.EXTRA_WINE";
+    public static final String ARG_WINE = "com.daviddetena.baccus.controller.fragment.WineFragment.ARG_WINE";
 
 
-    private static final String TAG = WineActivity.class.getSimpleName();
+    private static final String TAG = WineFragment.class.getSimpleName();
 
     // Código para indicar que la pantalla de la que procede es la de Settings en startActivityForResult
     private static final int SETTINGS_REQUEST = 1;
 
     // Constante que utilizaremos como clave para guardar la escala actual de la imagen y poderlo
     // guardar al ejecutar onSaveInstanceState()
-    private static final String STATE_IMAGE_SCALE_TYPE = "com.daviddetena.baccus.controller.WineActivity.STATE_IMAGE_SCALE_TYPE";
+    private static final String STATE_IMAGE_SCALE_TYPE = "com.daviddetena.baccus.controller.fragment.WineFragment.STATE_IMAGE_SCALE_TYPE";
 
     // Modelo
     private Wine mWine = null;
@@ -47,25 +53,28 @@ public class WineActivity extends AppCompatActivity {
     private ImageButton mGoToWebButton = null;
 
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wine);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
+        // Utilizamos el fichero fragment_wine.xml como contexto para la vista raíz
+        View root = inflater.inflate(R.layout.fragment_wine, container, false);
 
         // Recogemos el modelo que nos pasa WineryActivity
-        mWine = (Wine) getIntent().getSerializableExtra(EXTRA_WINE);
+        mWine = (Wine) getArguments().getSerializable(ARG_WINE);
 
         // Accedemos a las vistas desde el controlador, utilizando sus referencias en el .xml, para
         // asociarlas a nuestras variables
-        mWineImage = (ImageView) findViewById(R.id.wine_image);
-        mWineNameText = (TextView) findViewById(R.id.wine_name);
-        mWineTypeText = (TextView) findViewById(R.id.wine_type);
-        mWineOriginText = (TextView) findViewById(R.id.wine_origin);
-        mWineRatingBar = (RatingBar) findViewById(R.id.wine_rating);
-        mWineCompanyText = (TextView) findViewById(R.id.wine_company);
-        mWineNotesText = (TextView) findViewById(R.id.wine_notes);
-        mWineGrapesContainer = (ViewGroup) findViewById(R.id.grapes_container);
-        mGoToWebButton = (ImageButton) findViewById(R.id.go_to_web_button);
+        mWineImage = (ImageView) root.findViewById(R.id.wine_image);
+        mWineNameText = (TextView) root.findViewById(R.id.wine_name);
+        mWineTypeText = (TextView) root.findViewById(R.id.wine_type);
+        mWineOriginText = (TextView) root.findViewById(R.id.wine_origin);
+        mWineRatingBar = (RatingBar) root.findViewById(R.id.wine_rating);
+        mWineCompanyText = (TextView) root.findViewById(R.id.wine_company);
+        mWineNotesText = (TextView) root.findViewById(R.id.wine_notes);
+        mWineGrapesContainer = (ViewGroup) root.findViewById(R.id.grapes_container);
+        mGoToWebButton = (ImageButton) root.findViewById(R.id.go_to_web_button);
 
         // Sincronizamos modelo y vista
         mWineImage.setImageResource(mWine.getPhoto());
@@ -78,7 +87,7 @@ public class WineActivity extends AppCompatActivity {
 
         // Creamos tantos TextViews como Uvas tenga el vino
         for(int i=0; i<mWine.getGrapeCount(); i++){
-            TextView grapeText = new TextView(this);
+            TextView grapeText = new TextView(getActivity());
             grapeText.setText(mWine.getGrape(i));
 
             // Queremos que la uva ocupe el ancho completo en su contenedor
@@ -97,7 +106,9 @@ public class WineActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent webIntent = new Intent(WineActivity.this, WebActivity.class);
+                // Todos los fragment tienen un método getActivity(). Lo utilizamos para pasárselo
+                // al intent necesario
+                Intent webIntent = new Intent(getActivity(), WebActivity.class);
 
                 // Pasamos nuestro modelo Wine al Activity de WebActivity
                 webIntent.putExtra(WebActivity.EXTRA_WINE, mWine);
@@ -110,25 +121,17 @@ public class WineActivity extends AppCompatActivity {
         if(savedInstanceState != null && savedInstanceState.containsKey(STATE_IMAGE_SCALE_TYPE)){
             mWineImage.setScaleType((ImageView.ScaleType) savedInstanceState.getSerializable(STATE_IMAGE_SCALE_TYPE));
         }
+
+        return root;
     }
 
-    /**
-     * {@link #onOptionsItemSelected} method to handle them there.
-     *
-     * @param menu The options menu in which you place your items.
-     * @return You must return true for the menu to be displayed;
-     * if you return false it will not be shown.
-     * @see #onPrepareOptionsMenu
-     * @see #onOptionsItemSelected
-     */
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        MenuInflater inflater = getMenuInflater();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_main, menu);
-
-        return true;
     }
+
 
     /**
      * @param item The menu item that was selected.
@@ -146,7 +149,7 @@ public class WineActivity extends AppCompatActivity {
             // Definimos el parámetro EXTRA_WINE_IMAGE_SCALE_TYPE a la escala que tenga de forma
             // inicial la imagen. Como queremos recoger información de la pantalla a la que llamamos,
             // lo hacemos con startActivityForResult()
-            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            Intent settingsIntent = new Intent(getActivity(), SettingsActivity.class);
             settingsIntent.putExtra(SettingsActivity.EXTRA_WINE_IMAGE_SCALE_TYPE, mWineImage.getScaleType());
             startActivityForResult(settingsIntent, SETTINGS_REQUEST);
 
@@ -165,11 +168,11 @@ public class WineActivity extends AppCompatActivity {
      * @param data
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Comprobamos lo seleccionado por el usuario y que se ha seleccionado algo
-        if(requestCode == SETTINGS_REQUEST && resultCode == RESULT_OK){
+        if(requestCode == SETTINGS_REQUEST && resultCode == Activity.RESULT_OK){
 
             // Cambiamos la escala de la imagen a la que recogemos de la que guardó SettingsActivity
             ImageView.ScaleType scaleType = (ImageView.ScaleType) data.getSerializableExtra(SettingsActivity.EXTRA_WINE_IMAGE_SCALE_TYPE);
@@ -182,7 +185,7 @@ public class WineActivity extends AppCompatActivity {
      * @param outState
      */
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(STATE_IMAGE_SCALE_TYPE, mWineImage.getScaleType());
     }

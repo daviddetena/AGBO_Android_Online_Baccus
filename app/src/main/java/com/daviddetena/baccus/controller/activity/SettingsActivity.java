@@ -1,4 +1,4 @@
-package com.daviddetena.baccus.controller;
+package com.daviddetena.baccus.controller.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,7 +18,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener{
 
     // Constante que utilizaremos como clave para comunicarnos con otras actividades y
     // con el que referenciaremos el tipo de de escala de imagen seleccionado
-    public static final String EXTRA_WINE_IMAGE_SCALE_TYPE = "com.daviddetena.baccus.controller.SettingsActivity.EXTRA_WINE_IMAGE_SCALE_TYPE";
+    public static final String EXTRA_WINE_IMAGE_SCALE_TYPE = "com.daviddetena.baccus.controller.activity.SettingsActivity.EXTRA_WINE_IMAGE_SCALE_TYPE";
 
 
     // Vistas del Settings Activity

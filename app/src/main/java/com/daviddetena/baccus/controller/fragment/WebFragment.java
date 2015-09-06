@@ -1,13 +1,15 @@
-package com.daviddetena.baccus.controller;
+package com.daviddetena.baccus.controller.fragment;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
@@ -18,13 +20,13 @@ import com.daviddetena.baccus.R;
 import com.daviddetena.baccus.model.Wine;
 
 /**
- * Created by daviddetena on 05/09/15.
+ * Created by daviddetena on 06/09/15.
  */
-public class WebActivity extends AppCompatActivity {
-
+public class WebFragment extends Fragment{
     // Constante con la hacemos referencia al modelo (Wine) que viene de la pantalla anterior y que
-    // recogeremos mediante getIntent().getSerializableExtra()
-    public static final String EXTRA_WINE = "com.daviddetena.baccus.controller.WineActivity.extra_wine";
+    // recogeremos mediante getArguments().getSerializableExtra()
+    // Con Activity se utilizaba getIntent().
+    public static final String ARG_WINE = "com.daviddetena.baccus.controller.fragment.WebFragment.ARG_WINE";
 
     // Constante del diccionario saveInstanceState() con la que guardamos la última url cargada
     // por el browser
@@ -37,21 +39,24 @@ public class WebActivity extends AppCompatActivity {
     private WebView mBrowser = null;
     private ProgressBar mLoading = null;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        // Esta clase tendrá por contenido la actividad de la web del vino definida en su .xml
-        setContentView(R.layout.activity_web);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
+        // Utilizamos el fichero fragment_web.xml para generar toda la estructura de vistas en esta
+        // View raíz
+        View root = inflater.inflate(R.layout.fragment_web, container, false);
 
         // Accedemos al modelo que se nos pasa a través del Intent desde la pantalla inicial
         // de WineActivity
-        mWine = (Wine) getIntent().getSerializableExtra(EXTRA_WINE);
+        mWine = (Wine) getArguments().getSerializable(ARG_WINE);
 
 
-        // Asociamos vista y controlador
-        mBrowser = (WebView) findViewById(R.id.browser);
-        mLoading = (ProgressBar) findViewById(R.id.loading);
+        // Asociamos vista y controlador, utilizando el root para buscar por id
+        mBrowser = (WebView) root.findViewById(R.id.browser);
+        mLoading = (ProgressBar) root.findViewById(R.id.loading);
 
         // Configuramos vistas
 
@@ -91,6 +96,8 @@ public class WebActivity extends AppCompatActivity {
         else {
             mBrowser.loadUrl(savedInstanceState.getString(STATE_URL));
         }
+
+        return root;
     }
 
     /**
@@ -98,27 +105,21 @@ public class WebActivity extends AppCompatActivity {
      * @param outState
      */
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_URL, mBrowser.getUrl());
     }
 
     /**
-     * Sobreescribimos método que se encarga de añadir nuestro menú definido en un .xml a nuestra
-     * activity
+     * Sobreescribimos método que se encarga de añadir nuestro menú definido en un .xml a nuestro
+     * fragment
      * @param menu
-     * @return
+     * @param inflater
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
-        // Con esta clase MenuInflater le indicamos que queremos que nos incluya en el menú pasado
-        // por parámetro las opciones que están en el fichero xml R.menu.menu_web
-        MenuInflater inflater = getMenuInflater();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_web, menu);
-
-        return true;
     }
 
 

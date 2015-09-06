@@ -13,23 +13,23 @@
 
 
         <activity
-            android:name=".controller.WineActivity"
+            android:name=".controller.activity.WineActivity"
             android:label="@string/app_name" >
 
         </activity>
         <activity
-            android:name=".controller.WebActivity"
+            android:name=".controller.activity.WebActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".controller.SettingsActivity"
+            android:name=".controller.activity.SettingsActivity"
             android:label="@string/app_name" >
         </activity>
 
         <!-- La pantalla del vino será la de TabHost definida en WineryActivity -->
         <activity
-            android:name=".controller.WineryActivity"
+            android:name=".controller.activity.WineryActivity"
             android:label="@string/title_activity_winery" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
