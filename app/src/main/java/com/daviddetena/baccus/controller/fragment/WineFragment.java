@@ -53,6 +53,18 @@ public class WineFragment extends Fragment{
     private ImageButton mGoToWebButton = null;
 
 
+    /**
+     * Este método no es necesario sobreeescribirlo. Aquí lo hacemos para indicar que el fragment
+     * tiene opciones de menú y se lo comunique a la Activity del fragment para que las muestre en
+     * la barra superior
+     * @param savedInstanceState
+     */
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
