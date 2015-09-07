@@ -1,24 +1,12 @@
-<android.support.v4.app.FragmentTabHost xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@android:id/tabhost"
-                tools:context="com.daviddetena.baccus.controller.activity.WineryActivity">
+<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+                                   xmlns:tools="http://schemas.android.com/tools"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="match_parent"
+                                   android:id="@+id/pager"
+                                   tools:context="com.daviddetena.baccus.controller.activity.WineryActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <android.support.v4.view.PagerTabStrip
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
 
-        <TabWidget
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@android:id/tabs"
-            />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@android:id/tabcontent" />
-    </LinearLayout>
-
-</android.support.v4.app.FragmentTabHost>
+</android.support.v4.view.ViewPager>
